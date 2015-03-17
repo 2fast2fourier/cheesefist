@@ -145,7 +145,7 @@
   // Complexity
 
   // Maximum number of function parameters.
-  "maxparams": 5,
+  "maxparams": 6,
   // Maximum block nesting depth.
   "maxdepth": 3,
   // Maximum number of statements per function.

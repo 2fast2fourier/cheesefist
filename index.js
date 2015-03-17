@@ -6,8 +6,19 @@ var testRunner = require('./lib/testRunner');
 var prepareRequest = require('./lib/prepareRequest');
 
 function defaultWrapper(request, execute){
-  console.log(request.method+' '+request.url);
-  return execute();
+  console.log(request.method+' '+request.url, execute);
+  execute(function(err){
+    console.log('test callback', err);
+  });
+}
+
+function prepareArgs(request){
+  if(_.isArray(request.args)){
+    return when.resolve(request.args);
+  }else if(_.isObject(request.args)){
+    return when.resolve([request.args]);
+  }
+  return when.resolve([{}]);
 }
 
 function startTests(server, requests, testWrapper){
@@ -16,10 +27,10 @@ function startTests(server, requests, testWrapper){
   }
   if(_.isArray(requests)){
     _.forEach(requests, function(request){
-      testRunner(server, prepareRequest(request), when.resolve(request.args), testWrapper);
+      testRunner(server, prepareRequest(request), prepareArgs(request), testWrapper);
     });
   }else if(_.isObject(requests)){
-    testRunner(server, prepareRequest(requests), when.resolve(requests.args), testWrapper);
+    testRunner(server, prepareRequest(requests), prepareArgs(requests), testWrapper);
   }
 }
 
