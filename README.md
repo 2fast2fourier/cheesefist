@@ -2,9 +2,9 @@
 ####A recursive test runner for Hapi REST APIs
 
 Cheesefist executes requests against a set of endpoints, validating the response. Requests can be chained recursively,
-with the results from previous requests available for keyword substitution in the url path.
+with the results from previous requests available for keyword substitution in the url path. This is most useful for running requests against a large testing dataset, validating that every response is within expectations.
 
-Cheesefist is designed to integrate with any standard test framework, such as Mocha or Lab. See Quickstart for an example using Mocha.
+Cheesefist is designed to integrate with most test frameworks, like Mocha or Lab. See Quickstart for an example using Mocha.
 
 #####NOTE:
 This is an early release, syntax and functionality may change in the future. Response `test` cases are still in active development, expect new functionality and changes to existing features.
@@ -174,9 +174,36 @@ DELETE /users/8/email_addresses/23
 ```
 
 ####History References
-The placeholder can also reference a specific point in the request chain history using `{[x].keyname}`, where `x` is a number referencing the position in the request chain. The history position starts with `[0]`, which is the `args` value on the root test, and `[1]` is the result from the first request, `[2]` the results from the first `followBy` test, and so-on.
+In case of key name conflicts, a placeholder can also reference a specific point in the request chain history using `{[x].keyname}`. `x` is a number referencing the position in the request chain. Specifying a history position bypasses the order of precedence described above. If the referenced key does not exist at the history position specified, the test will fail immediately.
 
-Specifying a history position bypasses the order of precedence described above. If the referenced key does not exist at the history position specified, the test will fail immediately.
+The history position starts with `[0]`, which is the `args` value on the root test, and `[1]` is the result from the first request, `[2]` the results from the first `followBy` test, and so-on.
+
+Example:
+```
+{
+  url: '/users/{user_id}',
+  args: [
+  {
+    user_id: 2
+  },
+  {
+    user_id: 4
+  }],
+  followBy: {
+    url: '/users/{user_id}/email_addresses',
+    followBy: {
+      method: 'DELETE',
+      url: '/users/{user_id}/email_addresses/{email_address_id}'
+    }
+  }
+}
+```
+At the point URL composition executes for `/users/{user_id}/email_addresses/{email_address_id}`:
+-  `[0]` is the `args` field in `/users/{user_id}`. (`[0]` is always the root args object.)
+-  `[1]` is the result from `/users/{user_id}`.
+-  `[2]` is the result from `/users/{user_id}/email_addresses`.
+
+Normally, the key search will start with the immediate parent result, `[2]`. If you had a `user_id` key name conflict between results `[1]` and `[2]` and wanted the value from `[1]`, you could specify `{[1].user_id}` to avoid it.
 
 <a id="_testing"></a>
 ###Testing
