@@ -1,5 +1,8 @@
 #Cheesefist
-####A recursive test framework for Hapi REST APIs
+####A recursive test runner for Hapi REST APIs
+
+Cheesefist executes requests against a set of endpoints, validating the response object. Requests can be chained recursively,
+with the results of the previous tests available for keywork substitution in the path.
 
 ##Usage
 The test framework uses a set of requests, executing each request and validating the output against expected.
@@ -12,9 +15,12 @@ var cheesefist = require('cheesefist');
 
 var server = ...;//configure a Hapi server and routes (or build via glue)
 
-//This test suite will hit a browse endpoint,
-//then send a request to the individual read for each result from the first request.
-//See Syntax and Examples for more info.
+/*
+*  This test suite will hit a browse endpoint,
+*  then send a request to the individual read for each result from the first request.
+*
+*  See Syntax and Examples for more info.
+*/
 var testSuite = [
   {
     url: '/users'
@@ -34,24 +40,30 @@ var testSuite = [
   }
 ];
 
-//This examle uses Mocha as the test framework, you can use other frameworks as well.
-//The runTest method is passed into cheesefist,
-// which will call this method for each request step.
+/*
+* The 'runTest' method is passed into cheesefist,
+* which will call this method for each request step.
+*
+* This examle uses Mocha as the test framework, you can use other frameworks as well.
+*/
 function runTest(request, execute){
-  //This will be called with each request in the suite,
+  //This function will be called with each request in the suite,
   // and the target endpoint may be hit multiple times during a single execute().
 
   //Call the execute() method,
   // optionally passing in a callback or the 'done' method from your test framework.
   it('TEST '+request.method+' '+request.url, function(done){
     execute(done);
-    //The execute function is also a promise, and mocha can handle promises.
-    //So you can just 'return execute()'' instead of using the 'done' callback.
-    //Or shorten further: it('Testing '+request.method+' '+request.url, execute);
+    /*
+    *  The execute function is also a promise, and mocha can handle promises.
+    *  So you can just 'return execute()'' instead of using the 'done' callback.
+    *  Or shorten further:
+    *  it('Testing '+request.method+' '+request.url, execute);
+    */
   })
 }
 
-describe('API Test', function(){
+describe('API Tests', function(){
   //Execute cheesefist, which will call the runTest method to integrate your test framework.
   cheesefist(server, testSuite, runTest)
 });
@@ -101,6 +113,7 @@ This test grabs a list of objects, deletes every id in that list, then validates
         method: 'GET',
         test: 404 //expect a 404 since this specific thing_id was deleted.
       },
+
       /*
       *  We can also browse '/things' again and validate that zero objects are returned.
       *  (This probably won't work if your browse endpoint is paged or limit/offset,
@@ -141,7 +154,7 @@ This test grabs a list of objects, deletes every id in that list, then validates
 -   `method`: HTTP method for the request. GET, POST, PUT, ect. (Optional, default: `GET`)
 -   `args`: An argument list to be used for URL composition, only valid on top-most request of a chain. If provided an array, the request will execute once for each element. (Optional)
 -   `override`: An argument list to be used for URL composition, values contained here will any URL building values in the chain. (Optional)
--   `test`: Test arguments, see <a href="#_testing">Testing</a>. (Optional)
+-   `test`: Test arguments, see <a href="#_testing">Testing</a>. (Optional, default: statusCode 200)
 -   `followBy`: An array of tests to execute, with the results of the previous tests available for <a href="#_urlcomposition">URL composition</a>. (Optional)
 
 <a id="_urlcomposition"></a>
@@ -189,7 +202,7 @@ If `test` is undefined, it will default to `test: { statusCode: 200 }`.
 To disable testing altogether, use `test: false` or `test: null`.
 
 ####Short Definition
-If you use a string instead of a full request object, it will default to simple `GET` test:
+If you use a string instead of a full request object, it will default to a simple `GET` test:
 
 `'/status'` becomes:
 ```
