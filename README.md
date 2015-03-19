@@ -2,12 +2,12 @@
 ####A recursive test runner for Hapi REST APIs
 
 Cheesefist executes requests against a set of endpoints, validating the response. Requests can be chained recursively,
-with the results of the previous requests available for keyword substitution in the url path.
+with the results from previous requests available for keyword substitution in the url path.
 
 Cheesefist is designed to integrate with any standard test framework, such as Mocha or Lab. See Quickstart for an example using Mocha.
 
 #####NOTE:
-This is an early release, syntax and functionality may change in the future. Response test cases are still in active development, expect new functionality and changes to existing options.
+This is an early release, syntax and functionality may change in the future. Response `test` cases are still in active development, expect new functionality and changes to existing features.
 
 ##Usage
 The test framework uses a set of requests, executing each request and validating the output against expected.
@@ -73,7 +73,78 @@ describe('API Tests', function(){
   cheesefist(server, testSuite, runTest);
 });
 ```
+See <a href="#_example">Examples</a> for a more detailed test case.
 
+##Syntax
+#####Request
+```
+{
+  method: 'GET',
+  url: '/users/{user_id}',
+  args: {
+    user_id: 1
+  },
+  test: {
+    type: 'object',
+    statusCode: 200,
+    resultFields: ['id', 'name', 'description']
+  },
+  followBy: [ TEST, ... ]
+}
+```
+-   `url`: URL schema for request. Can use value placeholders `{key}` or `{[history].key}`, see <a href="#_urlcomposition">URL Composition</a>. (Required)
+-   `method`: HTTP method for the request. GET, POST, PUT, ect. (Optional, default: `GET`)
+-   `args`: An argument object to be used for URL composition, only valid on top-most request of a chain. If provided an array, the request will execute once for each element. (Optional)
+-   `override`: An argument object to be used for URL composition, values contained here will override any history values when composing the URL. (Optional)
+-   `test`: Test arguments, see <a href="#_testing">Testing</a>. (Optional, default: statusCode 200)
+-   `followBy`: An array of tests to execute, with the results of the previous tests available for <a href="#_urlcomposition">URL composition</a>. (Optional)
+
+<a id="_urlcomposition"></a>
+###URL Composition
+TODO
+
+<a id="_testing"></a>
+###Testing
+
+#####Validation Syntax
+```
+{
+  url: '/things',
+  ...
+  test: {
+    //(optional) Require status code to match.
+    statusCode: 200,
+
+    //(optional) Require response to be a type, available types: 'array', 'object'.
+    type: 'array',
+
+    //(optional) Require field to exist on each array element.
+    //NOTE: resultFields is currently in a state of flux, more functionality is coming.
+    resultFields: ['thing_id', 'name', 'description'], 
+
+     //(optional) Arrays only, require array to have given length.
+    length: 4 
+  }
+}
+```
+#####Validation Defaults
+-  If `test` is a number, it is equivalent to `test: { statusCode: (number) }`.
+-  If `test` is undefined, it will default to `test: { statusCode: 200 }`.
+-  To disable testing altogether, use `test: false` or `test: null`.
+
+###Short Definition
+If you use a string instead of a full request object, it will default to a simple `GET` test:
+
+`'/status'` becomes:
+```
+{
+  method: 'GET',
+  url: '/status',
+  test: 200
+}
+```
+
+<a id="_example"></a>
 ##Example
 This test grabs a list of objects, deletes every id in that list, then validates that a read against each id will fail.
 ```
@@ -135,86 +206,5 @@ This test grabs a list of objects, deletes every id in that list, then validates
       }
     ]
   }
-}
-```
-
-##Syntax
-#####Request
-```
-{
-  method: 'GET',
-  url: '/users/{user_id}',
-  args: {
-    user_id: 1
-  },
-  test: {
-    type: 'object',
-    statusCode: 200,
-    resultFields: ['id', 'name', 'description']
-  },
-  followBy: [ TEST, ... ]
-}
-```
--   `url`: URL schema for request. Can use value placeholders `{key}` or `{[history].key}`, see <a href="#_urlcomposition">URL Composition</a>. (Required)
--   `method`: HTTP method for the request. GET, POST, PUT, ect. (Optional, default: `GET`)
--   `args`: An argument list to be used for URL composition, only valid on top-most request of a chain. If provided an array, the request will execute once for each element. (Optional)
--   `override`: An argument list to be used for URL composition, values contained here will any URL building values in the chain. (Optional)
--   `test`: Test arguments, see <a href="#_testing">Testing</a>. (Optional, default: statusCode 200)
--   `followBy`: An array of tests to execute, with the results of the previous tests available for <a href="#_urlcomposition">URL composition</a>. (Optional)
-
-<a id="_urlcomposition"></a>
-###URL Composition
-TODO
-
-<a id="_testing"></a>
-###Testing
-TODO
-
-#####Array Validation
-```
-{
-  url: '/things',
-  test: {
-    statusCode: 200, //(optional)
-    type: 'array', //(optional) require result to be an array
-    resultFields: ['thing_id', 'name', 'description'], //(optional) require field to exist on each array element
-    length: 4  //(optional) check array length
-  }
-}
-```
-#####Single-object Validation
-```
-{
-  url: '/things/{thing_id}',
-  test: {
-    statusCode: 200, //(optional)
-    type: 'object', //(optional) require result to be an object
-    resultFields: ['thing_id', 'name', 'description'] //(optional) require field to exist on result object
-  }
-}
-```
-#####Status Code test shortcut:
-```
-{
-  method: 'DELETE',
-  url: '/things/{thing_id}',
-  ...
-  test: 204 //(optional) shortcut for statusCode
-}
-```
-#####Defaults
-If `test` is undefined, it will default to `test: { statusCode: 200 }`.
-
-To disable testing altogether, use `test: false` or `test: null`.
-
-####Short Definition
-If you use a string instead of a full request object, it will default to a simple `GET` test:
-
-`'/status'` becomes:
-```
-{
-  method: 'GET',
-  url: '/status',
-  test: 200
 }
 ```
