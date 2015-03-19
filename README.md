@@ -1,8 +1,13 @@
 #Cheesefist
 ####A recursive test runner for Hapi REST APIs
 
-Cheesefist executes requests against a set of endpoints, validating the response object. Requests can be chained recursively,
-with the results of the previous tests available for keywork substitution in the path.
+Cheesefist executes requests against a set of endpoints, validating the response. Requests can be chained recursively,
+with the results of the previous requests available for keyword substitution in the url path.
+
+Cheesefist is designed to integrate with any standard test framework, such as Mocha or Lab. See Quickstart for an example using Mocha.
+
+#####NOTE:
+This is an early release, syntax and functionality may change in the future. Response test cases are still in active development, expect new functionality and changes to existing options.
 
 ##Usage
 The test framework uses a set of requests, executing each request and validating the output against expected.
@@ -50,8 +55,8 @@ function runTest(request, execute){
   //This function will be called with each request in the suite,
   // and the target endpoint may be hit multiple times during a single execute().
 
-  //Call the execute() method,
-  // optionally passing in a callback or the 'done' method from your test framework.
+  //Call the execute() method, optionally passing in a callback
+  // or the 'done' method from your test framework.
   it('TEST '+request.method+' '+request.url, function(done){
     execute(done);
     /*
@@ -60,12 +65,12 @@ function runTest(request, execute){
     *  Or shorten further:
     *  it('Testing '+request.method+' '+request.url, execute);
     */
-  })
+  });
 }
 
 describe('API Tests', function(){
   //Execute cheesefist, which will call the runTest method to integrate your test framework.
-  cheesefist(server, testSuite, runTest)
+  cheesefist(server, testSuite, runTest);
 });
 ```
 
@@ -164,6 +169,7 @@ TODO
 <a id="_testing"></a>
 ###Testing
 TODO
+
 #####Array Validation
 ```
 {
