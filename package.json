@@ -6,11 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2fast2fourier/cheesefist"
+  },
+  "keywords": [
+    "hapi",
+    "testing",
+    "test"
+  ],
   "author": "Matthew Shepard <matt@iceddev.com> (http://iceddev.com/)",
   "license": "MIT",
   "dependencies": {
     "chai": "^2.1.2",
-    "istanbul": "^0.3.8",
     "lodash": "^3.5.0",
     "require-dir": "^0.1.0",
     "when": "^3.7.2"
