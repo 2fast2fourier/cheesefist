@@ -14,6 +14,8 @@ The test framework uses a set of requests, executing each request and validating
 
 Each request object represents a type of request, with a given `url` schema and (optionally) `payload`/`header` values. The optional `test` value is a set of rules that can be used to validate the response from the request. The results from each request can be passed onto a set of `followBy` tests, and those tests can use the result variables in their url construction.
 
+If a test fails but that request has `followBy` requests, those child requests are preemptively failed with the url of the parent test that failed.
+
 ##Quickstart
 ```
 var cheesefist = require('cheesefist');
@@ -101,7 +103,80 @@ See <a href="#_example">Examples</a> for a more detailed test case.
 
 <a id="_urlcomposition"></a>
 ###URL Composition
-TODO
+The `url` field in a request can include placeholders `{keyname}`, those placeholders are automatically replaced with values from `args`, `overrides`, or the result of any parent tests.
+
+The order of precedence is as follows:
+-  Values from the `overrides` object attached to that request. Overrides DO NOT propegate between requests in a chain.
+-  Response values from the request history of that test chain, starting from the immediate parent and working backwards to the beginning.
+-  Values from the `args` object in the root request. These values are also available as `{[0].keyname}` as a history request.
+
+Note: The `args` object is only valid on the first request of a chain, `args` values attached to `followBy` requests will be ignored. (This may change in the near future.)
+
+#####Example
+Given the following test suite:
+```
+{
+  url: '/users',
+  followBy: {
+    method: 'PUT',
+    url: '/users/{user_id}',
+    payload: {
+      name: ...
+    }
+  }
+}
+```
+If the first request returns an array:
+```
+[
+  {
+    user_id: 5
+  },
+  {
+    user_id: 7
+  },
+  {
+    user_id: 8
+  }
+]
+```
+Then the `followBy` test will generate these requests:
+```
+PUT /users/5
+PUT /users/7
+PUT /users/8
+```
+
+The result set from each request is combined for the `followBy` tests, this means that recursively requesting against browse endpoints may generate a very large number of hits. Example:
+```
+{
+  url: '/users',
+  followBy: {
+    url: '/users/{user_id}/email_addresses',
+    followBy: {
+      method: 'DELETE',
+      url: '/users/{user_id}/email_addresses/{email_address_id}'
+    }
+  }
+}
+```
+Assuming that each user has 3 email addresses, the innermost `followBy` test will generate this combined request set:
+```
+DELETE /users/5/email_addresses/1
+DELETE /users/5/email_addresses/3
+DELETE /users/5/email_addresses/4
+DELETE /users/7/email_addresses/5
+DELETE /users/7/email_addresses/7
+DELETE /users/7/email_addresses/12
+DELETE /users/8/email_addresses/13
+DELETE /users/8/email_addresses/16
+DELETE /users/8/email_addresses/23
+```
+
+####History References
+The placeholder can also reference a specific point in the request chain history using `{[x].keyname}`, where `x` is a number referencing the position in the request chain. The history position starts with `[0]`, which is the `args` value on the root test, and `[1]` is the result from the first request, `[2]` the results from the first `followBy` test, and so-on.
+
+Specifying a history position bypasses the order of precedence described above. If the referenced key does not exist at the history position specified, the test will fail immediately.
 
 <a id="_testing"></a>
 ###Testing
