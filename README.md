@@ -310,3 +310,8 @@ This test grabs a list of objects, deletes every id in that list, then validates
   }
 }
 ```
+
+##Contribution
+Create any pull requests against `master`. If your feature branch is behind upstream master please attempt to rebase/merge, we can help resolve merge conflicts if there are any issues. Feel free to add yourself to the contribution section in `package.json` in your PR.
+
+TODO Testing and code coverage.
