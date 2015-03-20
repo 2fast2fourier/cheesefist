@@ -1,22 +1,22 @@
-#Cheesefist
-####A recursive test runner for Hapi REST APIs
+# Cheesefist
+#### A recursive test runner for Hapi REST APIs
 
 Cheesefist executes requests against a set of endpoints, validating the response. Requests can be chained recursively,
 with the results from previous requests available for keyword substitution in the url path. This is most useful for running requests against a large testing dataset, validating that every response is within expectations.
 
 Cheesefist is designed to integrate with most test frameworks, like Mocha or Lab. See Quickstart for an example using Mocha.
 
-#####NOTE:
+##### NOTE:
 This is an early release, syntax and functionality may change in the future. Response `test` cases are still in active development, expect new functionality and changes to existing features.
 
-##Usage
+## Usage
 The test framework uses a set of requests, executing each request and validating the output against expected.
 
 Each request object represents a type of request, with a given `url` schema and (optionally) `payload`/`header` values. The optional `test` value is a set of rules that can be used to validate the response from the request. The results from each request can be passed onto a set of `followBy` tests, and those tests can use the result variables in their url construction.
 
 If a test fails but that request has `followBy` requests, those child requests are preemptively failed with the url of the parent test that failed.
 
-##Quickstart
+## Quickstart
 ```
 var cheesefist = require('cheesefist');
 
@@ -77,8 +77,8 @@ describe('API Tests', function(){
 ```
 See <a href="#_example">Examples</a> for a more detailed test case.
 
-##Syntax
-#####Request
+## Syntax
+##### Request
 ```
 {
   method: 'GET',
@@ -102,7 +102,7 @@ See <a href="#_example">Examples</a> for a more detailed test case.
 -   `followBy`: An array of tests to execute, with the results of the previous tests available for <a href="#_urlcomposition">URL composition</a>. (Optional)
 
 <a id="_urlcomposition"></a>
-###URL Composition
+### URL Composition
 The `url` field in a request can include placeholders `{keyname}`, those placeholders are automatically replaced with values from `args`, `overrides`, or the result of any parent tests.
 
 The order of precedence is as follows:
@@ -112,7 +112,7 @@ The order of precedence is as follows:
 
 Note: The `args` object is only valid on the first request of a chain, `args` values attached to `followBy` requests will be ignored. (This may change in the near future.)
 
-#####Example
+##### Example
 Given the following test suite:
 ```
 {
@@ -173,7 +173,7 @@ DELETE /users/8/email_addresses/16
 DELETE /users/8/email_addresses/23
 ```
 
-####History References
+#### History References
 In case of key name conflicts, a placeholder can also reference a specific point in the request chain history using `{[x].keyname}`. `x` is a number referencing the position in the request chain. Specifying a history position bypasses the order of precedence described above. If the referenced key does not exist at the history position specified, the test will fail immediately.
 
 The history position starts with `[0]`, which is the `args` value on the root test, and `[1]` is the result from the first request, `[2]` the results from the first `followBy` test, and so-on.
@@ -206,9 +206,9 @@ At the point URL composition executes for `/users/{user_id}/email_addresses/{ema
 Normally, the key search will start with the immediate parent result, `[2]`. If you had a `user_id` key name conflict between results `[1]` and `[2]` and wanted the value from `[1]`, you could specify `{[1].user_id}` to avoid it.
 
 <a id="_testing"></a>
-###Testing
+### Testing
 
-#####Validation Syntax
+##### Validation Syntax
 ```
 {
   url: '/things',
@@ -229,12 +229,12 @@ Normally, the key search will start with the immediate parent result, `[2]`. If 
   }
 }
 ```
-#####Validation Defaults
+##### Validation Defaults
 -  If `test` is a number, it is equivalent to `test: { statusCode: (number) }`.
 -  If `test` is undefined, it will default to `test: { statusCode: 200 }`.
 -  To disable testing altogether, use `test: false` or `test: null`.
 
-###Short Definition
+### Short Definition
 If you use a string instead of a full request object, it will default to a simple `GET` test:
 
 `'/status'` becomes:
@@ -247,7 +247,7 @@ If you use a string instead of a full request object, it will default to a simpl
 ```
 
 <a id="_example"></a>
-##Example
+## Example
 This test grabs a list of objects, deletes every id in that list, then validates that a read against each id will fail.
 ```
 {
@@ -311,7 +311,7 @@ This test grabs a list of objects, deletes every id in that list, then validates
 }
 ```
 
-##Contribution
+## Contribution
 Create any pull requests against `master`. If your feature branch is behind upstream master please attempt to rebase/merge, we can help resolve merge conflicts if there are any issues. Feel free to add yourself to the contribution section in `package.json` in your PR.
 
 TODO Testing and code coverage.
