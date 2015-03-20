@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for cheesefist/lib/testRunner.js</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="../../prettify.css">
+
+    <link rel="stylesheet" href="../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header medium">
+    <h1>Code coverage report for <span class="entity">cheesefist/lib/testRunner.js</span></h1>
+    <h2>
+        
+        Statements: <span class="metric">71.43% <small>(45 / 63)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class="metric">65% <small>(13 / 20)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class="metric">66.67% <small>(8 / 12)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class="metric">71.43% <small>(45 / 63)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">cheesefist/lib/</a> &#187; testRunner.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
+&nbsp;
+var _ = require('lodash');
+var chai = require('chai');
+var when = require('when');
+var util = require('util');
+var nodefn = require('when/node');
+var buildUrl = require('./buildUrl');
+var testSuite = require('./testSuite');
+var preparePayload = require('./preparePayload');
+var prepareRequest = require('./prepareRequest');
+&nbsp;
+chai.config.showDiff = false;
+var expect = chai.expect;
+&nbsp;
+&nbsp;
+function createHistory(results, previous){
+  var finalResult = _.cloneDeep(results);
+  var data = {
+    _history: [],
+    _override: previous._override || {}
+  };
+  if(_.isArray(previous._history)){
+    data._history = _.cloneDeep(previous._history);
+    data._history.push(_.omit(previous, '_history', '_override'));
+  }else <span class="missing-if-branch" title="else path not taken" >E</span>if(_.isObject(previous)){
+    data._history = [_.omit(previous, '_history', '_override')];
+  }
+  <span class="missing-if-branch" title="if path not taken" >I</span>if(_.isArray(finalResult)){
+<span class="cstat-no" title="statement not covered" >    _.forEach(finalResult, <span class="fstat-no" title="function not covered" >function(result){</span></span>
+<span class="cstat-no" title="statement not covered" >      _.assign(result, data);</span>
+    });
+  }else <span class="missing-if-branch" title="else path not taken" >E</span>if(_.isObject(finalResult)){
+    _.assign(finalResult, data);
+  }else{
+<span class="cstat-no" title="statement not covered" >    finalResult = data;</span>
+  }
+  return finalResult;
+}
+&nbsp;
+function runTest(server, request, history){
+  return when.promise(function(resolve, reject){
+    var url = buildUrl(request.url, history, request);
+    var options = _.assign(
+      {
+        url: url,
+        method: request.method
+      },
+      _.pick(request, ['headers', 'credentials'])
+    );
+    if(request.payload){
+      options.payload = preparePayload(request, history);
+    }
+    server.inject(options, function(res){
+      try{
+        <span class="missing-if-branch" title="else path not taken" >E</span>if(_.isObject(request.test)){
+          testSuite(request.test, res);
+        }
+        resolve(createHistory(res.result, history));
+      }catch(error){
+<span class="cstat-no" title="statement not covered" >        console.log('\x1B[31m'+error.toString()+'\x1B[0m');</span>
+<span class="cstat-no" title="statement not covered" >        console.log('url:', url, res.statusCode);</span>
+<span class="cstat-no" title="statement not covered" >        if(error.details){</span>
+<span class="cstat-no" title="statement not covered" >          console.log('details:', error.details);</span>
+        }
+<span class="cstat-no" title="statement not covered" >        error.url = url;</span>
+<span class="cstat-no" title="statement not covered" >        error.method = request.method;</span>
+<span class="cstat-no" title="statement not covered" >        reject(error);</span>
+      }
+    });
+  });
+}
+&nbsp;
+function test(historyPromise, executor, resolve, reject, callback) {
+  var promise = when.map(historyPromise, executor)
+    .tap(function(results){
+      resolve(results);
+    })
+    .otherwise(<span class="fstat-no" title="function not covered" >function(err){</span>
+<span class="cstat-no" title="statement not covered" >      reject(err);</span>
+<span class="cstat-no" title="statement not covered" >      return when.reject(err);</span>
+    });
+  return nodefn.bindCallback(promise, callback);
+}
+&nbsp;
+function testRunner(server, request, historyPromise, testWrapper){
+  var resultsPromise = when.promise(function(resolve, reject){
+    testWrapper(request, _.partial(test, historyPromise, _.partial(runTest, server, request), resolve, reject));
+  })
+    .then(_.flatten)
+    .otherwise(<span class="fstat-no" title="function not covered" >function(err){</span>
+      //if we have children tests, pass failure state to them so they can short-circuit
+<span class="cstat-no" title="statement not covered" >      var parentError = new Error('Parent test failed: '+err.method+' '+err.url);</span>
+<span class="cstat-no" title="statement not covered" >      parentError.url = err.url;</span>
+<span class="cstat-no" title="statement not covered" >      parentError.method = err.method;</span>
+<span class="cstat-no" title="statement not covered" >      return when.reject(parentError);</span>
+    });
+  <span class="missing-if-branch" title="if path not taken" >I</span>if(_.isArray(request.followBy)){
+<span class="cstat-no" title="statement not covered" >    _.forEach(request.followBy, <span class="fstat-no" title="function not covered" >function(request){</span></span>
+<span class="cstat-no" title="statement not covered" >      testRunner(server, prepareRequest(request), resultsPromise, testWrapper);</span>
+    });
+  }else if(_.isObject(request.followBy)){
+    testRunner(server, prepareRequest(request.followBy), resultsPromise, testWrapper);
+  }
+}
+&nbsp;
+module.exports = testRunner;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Mar 20 2015 16:56:24 GMT-0700 (MST)</div>
+</div>
+
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+
+<script src="../../sorter.js"></script>
+</body>
+</html>

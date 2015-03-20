@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for cheesefist/lib/testSuite.js</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="../../prettify.css">
+
+    <link rel="stylesheet" href="../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">cheesefist/lib/testSuite.js</span></h1>
+    <h2>
+        
+        Statements: <span class="metric">34.43% <small>(21 / 61)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class="metric">19.51% <small>(8 / 41)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class="metric">25% <small>(2 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class="metric">34.43% <small>(21 / 61)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">cheesefist/lib/</a> &#187; testSuite.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
+&nbsp;
+var _ = require('lodash');
+var chai = require('chai');
+var when = require('when');
+var util = require('util');
+var buildUrl = require('./buildUrl');
+&nbsp;
+chai.config.showDiff = false;
+var expect = chai.expect;
+&nbsp;
+<span class="fstat-no" title="function not covered" >function validate(result, key, type, value){</span>
+<span class="cstat-no" title="statement not covered" >  try{</span>
+<span class="cstat-no" title="statement not covered" >    if(key &amp;&amp; type &amp;&amp; value){</span>
+<span class="cstat-no" title="statement not covered" >      expect(result).to.have.a.property(key, value).that.is.a(type);</span>
+    }else <span class="cstat-no" title="statement not covered" >if(key &amp;&amp; type){</span>
+<span class="cstat-no" title="statement not covered" >      expect(result).to.have.a.property(key).that.is.a(type);</span>
+    }else <span class="cstat-no" title="statement not covered" >if(key){</span>
+<span class="cstat-no" title="statement not covered" >      expect(result).to.have.a.property(key);</span>
+    }
+  }catch(error){
+<span class="cstat-no" title="statement not covered" >    return createError('ValidationError', error.message, util.inspect(error.actual, {depth: 0}));</span>
+  }
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function validateFields(test, res){</span>
+<span class="cstat-no" title="statement not covered" >  var error;</span>
+<span class="cstat-no" title="statement not covered" >  _.forEach(test.resultFields, <span class="fstat-no" title="function not covered" >function(field){</span></span>
+<span class="cstat-no" title="statement not covered" >    var key, type, value;</span>
+<span class="cstat-no" title="statement not covered" >    if(_.isString(field)){</span>
+<span class="cstat-no" title="statement not covered" >      key = field;</span>
+    }else <span class="cstat-no" title="statement not covered" >if(_.isObject(field)){</span>
+<span class="cstat-no" title="statement not covered" >      key = field.key;</span>
+<span class="cstat-no" title="statement not covered" >      type = field.type;</span>
+<span class="cstat-no" title="statement not covered" >      value = field.value;</span>
+    }
+<span class="cstat-no" title="statement not covered" >    if(_.isArray(res.result)){</span>
+<span class="cstat-no" title="statement not covered" >      _.forEach(res.result, <span class="fstat-no" title="function not covered" >function(result){</span></span>
+<span class="cstat-no" title="statement not covered" >        var err = validate(result, key, type, value);</span>
+        //allow the rest of the validation tests to continue
+<span class="cstat-no" title="statement not covered" >        error = error || err;</span>
+        //display every validation failure, so we can track down multiple issues
+<span class="cstat-no" title="statement not covered" >        displayError(err);</span>
+      });
+    }else{
+<span class="cstat-no" title="statement not covered" >      var err = validate(res.result, key, type, value);</span>
+<span class="cstat-no" title="statement not covered" >      error = error || err;</span>
+<span class="cstat-no" title="statement not covered" >      displayError(err);</span>
+    }
+  });
+<span class="cstat-no" title="statement not covered" >  if(error){</span>
+    //use the first encountered error to fail the whole test.
+<span class="cstat-no" title="statement not covered" >    throw error;</span>
+  }
+}
+&nbsp;
+function resultValidation (test, result) {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if(test.type){
+<span class="cstat-no" title="statement not covered" >    expect(result).to.be.an(test.type);</span>
+  }
+  <span class="missing-if-branch" title="if path not taken" >I</span>if(test.length !== undefined){
+<span class="cstat-no" title="statement not covered" >    expect(result).to.be.an('array').with.length(test.length);</span>
+  }
+}
+&nbsp;
+function testSuite(test, res){
+  //only default to 200 if statusCode is undefined,
+  //if statusCode is false or null skip the test
+  var statusCode = test.statusCode === undefined ? <span class="branch-0 cbranch-no" title="branch not covered" >200 </span>: test.statusCode;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if(statusCode &amp;&amp; statusCode !== res.statusCode){
+<span class="cstat-no" title="statement not covered" >    throw createError('StatusCodeError', 'Result is '+res.statusCode+', Expected '+statusCode);</span>
+  }
+  resultValidation(test, res.result);
+  <span class="missing-if-branch" title="if path not taken" >I</span>if(test.resultFields){
+<span class="cstat-no" title="statement not covered" >    validateFields(test, res);</span>
+  }
+  <span class="missing-if-branch" title="if path not taken" >I</span>if(_.isFunction(test.validate)){
+<span class="cstat-no" title="statement not covered" >    expect(test.validate(res)).to.be.true();</span>
+  }
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function createError(name, message, details){</span>
+<span class="cstat-no" title="statement not covered" >  var err = new Error(message);</span>
+<span class="cstat-no" title="statement not covered" >  err.name = name;</span>
+<span class="cstat-no" title="statement not covered" >  err.details = details;</span>
+<span class="cstat-no" title="statement not covered" >  return err;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function displayError(err){</span>
+<span class="cstat-no" title="statement not covered" >  if(err){</span>
+<span class="cstat-no" title="statement not covered" >    console.log('\x1B[31m'+err.toString()+'\x1B[0m');</span>
+<span class="cstat-no" title="statement not covered" >    if(err.details){</span>
+<span class="cstat-no" title="statement not covered" >      console.log('details:', err.details);</span>
+    }
+  }
+}
+&nbsp;
+module.exports = testSuite;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Mar 20 2015 16:56:24 GMT-0700 (MST)</div>
+</div>
+
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+
+<script src="../../sorter.js"></script>
+</body>
+</html>
