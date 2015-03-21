@@ -176,25 +176,14 @@ describe('Test Request Composition', function(){
     });
   });
 
-  describe('Default Test Runner', function(){
-    it('Execute test in default runner', function(done){
-      var suite = '/test/users';
-      cheesefist(server, suite)
-        .then(function(){
-          done();
-        })
-        .otherwise(done);
-    });
-
-    it('Promise rejected on failed run', function(done){
-      var suite = '/test/bad';
-      cheesefist(server, suite)
-        .then(function(res){
-          done(new Error('Test suite finished without intended error'));
-        })
-        .otherwise(function(err){
-          done();
-        });
+  describe('Missing Test Runner', function(){
+    it('Throw if test runner is not provided', function(done){
+      try{
+        cheesefist(server, '/test/users');
+      }catch(err){
+        expect(err).to.exist;
+        done();
+      }
     });
   });
 

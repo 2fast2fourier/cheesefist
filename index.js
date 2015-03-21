@@ -7,18 +7,6 @@ var sequence = require('when/sequence');
 var testRunner = require('./lib/testRunner');
 var prepareRequest = require('./lib/prepareRequest');
 
-function defaultWrapper(request, execute){
-  console.log(request.method+' '+request.url);
-  execute(function(err){
-    if(err){
-      console.log('Test Failed: '+request.method+' '+request.url);
-      throw err;
-    }else{
-      console.log('Test Passed');
-    }
-  });
-}
-
 function prepareArgs(request){
   if(_.isArray(request.args)){
     return when.resolve(request.args);
@@ -31,9 +19,9 @@ function prepareArgs(request){
 function startTests(server, requests, testWrapper, callback){
   var tests = [];
   if(!_.isFunction(testWrapper)){
-    testWrapper = defaultWrapper;
     console.log('---NOTICE: No test framework integration provided.');
     console.log('---See Quickstart in readme to for details on integrating test frameworks (Mocha, Lab, ect).');
+    throw new Error('Please provide test framework wrapper.');
   }
   if(_.isArray(requests)){
     _.forEach(requests, function(request){
