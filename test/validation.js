@@ -44,6 +44,17 @@ describe('Test Result Validation', function(){
       //cheesefist promise will reject if any tests fail.
   });
 
+  describe('Test validation can be skipped altogether', function(){
+    var suite = [{
+      url: '/test/bad',
+      test: false
+    },{
+      url: '/test/bad',
+      test: null
+    }];
+    cheesefist(server, suite, test);
+  });
+
   describe('StatusCode test shortcut', function(){
     var suite = {
       url: '/test/bad',
@@ -159,6 +170,12 @@ describe('Test Result Validation', function(){
         url: '/test/users',
         test: {
           resultFields: ['user_id', 'username']
+        },
+        followBy:{
+          url: '/test/users/{user_id}',
+          test: {
+            resultFields: ['user_id', 'username']
+          }
         }
       };
       cheesefist(server, suite, test);
@@ -172,6 +189,16 @@ describe('Test Result Validation', function(){
         }
       };
       cheesefist(server, suite, test);
+    });
+
+    describe('should fail if result is not an object or array', function(){
+      var suite = {
+        url: '/test/return/string',
+        test: {
+          resultFields: ['user_id', 'username', 'invalid']
+        }
+      };
+      cheesefist(server, suite, testShouldFail).done(shouldNotExist, shouldExist);
     });
 
     describe('should fail if fields are missing', function(){
