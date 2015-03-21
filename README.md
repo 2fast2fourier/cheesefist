@@ -1,5 +1,6 @@
 # Cheesefist
 #### A recursive test runner for Hapi REST APIs
+[![Build Status](https://travis-ci.org/2fast2fourier/cheesefist.svg?branch=master)](https://travis-ci.org/2fast2fourier/cheesefist)
 
 Cheesefist executes requests against a set of endpoints, validating the response. Requests can be chained recursively,
 with the results from previous requests available for keyword substitution in the url path. This is most useful for running requests against a large testing dataset, validating that every response is within expectations.
