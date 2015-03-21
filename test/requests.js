@@ -135,4 +135,32 @@ describe('Test Request Composition', function(){
     cheesefist(server, suite, test);
   });
 
+  describe('Args Array', function(){
+    var suite = {
+      url: '/test/users/{user_id}',
+      args: [{
+        user_id: 1
+      },{
+        user_id: 2
+      }]
+    };
+    cheesefist(server, suite, test);
+  });
+
+  describe('Default Test Runner', function(){
+    var suite = '/test/users';
+    cheesefist(server, suite);
+  });
+
+  // describe('Default Test Runner', function(){
+  //   it('Error thrown on test failure', function(done){
+  //     var suite = '/test/missing';
+  //     try{
+  //       cheesefist(server, suite);
+  //     }catch(err){
+  //       done();
+  //     }
+  //   });
+  // });
+
 });

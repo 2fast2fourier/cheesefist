@@ -6,9 +6,12 @@ var testRunner = require('./lib/testRunner');
 var prepareRequest = require('./lib/prepareRequest');
 
 function defaultWrapper(request, execute){
-  console.log(request.method+' '+request.url, execute);
+  console.log(request.method+' '+request.url);
   execute(function(err){
-    console.log('test callback', err);
+    if(err){
+      console.log('Test Failed: '+request.method+' '+request.url);
+      throw err;
+    }
   });
 }
 
