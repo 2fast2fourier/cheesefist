@@ -5,5 +5,5 @@ node_js:
 script:
 - npm run test
 - if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
-    npm run check-coverage
+    npm run check-coverage;
   fi
