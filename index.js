@@ -29,7 +29,7 @@ function startTests(server, requests, testWrapper){
     _.forEach(requests, function(request){
       testRunner(server, prepareRequest(request), prepareArgs(request), testWrapper);
     });
-  }else if(_.isObject(requests)){
+  }else if(_.isObject(requests) || _.isString(requests)){
     testRunner(server, prepareRequest(requests), prepareArgs(requests), testWrapper);
   }
 }
