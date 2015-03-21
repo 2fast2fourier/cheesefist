@@ -147,20 +147,55 @@ describe('Test Request Composition', function(){
     cheesefist(server, suite, test);
   });
 
-  describe('Default Test Runner', function(){
-    var suite = '/test/users';
-    cheesefist(server, suite);
+  describe('Overall Promise', function(){
+    var passthrough = function(request, execute){
+      execute(function(err, res){});
+    };
+    it('Promise resolves when all tests are successful', function(done){
+      var suite = [
+        '/test/users',
+        '/test/history'
+      ];
+      cheesefist(server, suite, passthrough)
+        .then(function(){
+          //don't pass values through, mocha would fail the test.
+          done();
+        })
+        .otherwise(done);
+    });
+
+    it('Promise rejected on failed run', function(done){
+      var suite = '/test/bad';
+      cheesefist(server, suite, passthrough)
+      .done(function(res){
+        done(new Error('Test suite finished without intended error'));
+      },
+      function(err){
+        done();
+      });
+    });
   });
 
-  // describe('Default Test Runner', function(){
-  //   it('Error thrown on test failure', function(done){
-  //     var suite = '/test/missing';
-  //     try{
-  //       cheesefist(server, suite);
-  //     }catch(err){
-  //       done();
-  //     }
-  //   });
-  // });
+  describe('Default Test Runner', function(){
+    it('Execute test in default runner', function(done){
+      var suite = '/test/users';
+      cheesefist(server, suite)
+        .then(function(){
+          done();
+        })
+        .otherwise(done);
+    });
+
+    it('Promise rejected on failed run', function(done){
+      var suite = '/test/bad';
+      cheesefist(server, suite)
+        .then(function(res){
+          done(new Error('Test suite finished without intended error'));
+        })
+        .otherwise(function(err){
+          done();
+        });
+    });
+  });
 
 });

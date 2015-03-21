@@ -2,6 +2,8 @@
 
 var _ = require('lodash');
 var when = require('when');
+var nodefn = require('when/node');
+var sequence = require('when/sequence');
 var testRunner = require('./lib/testRunner');
 var prepareRequest = require('./lib/prepareRequest');
 
@@ -11,6 +13,8 @@ function defaultWrapper(request, execute){
     if(err){
       console.log('Test Failed: '+request.method+' '+request.url);
       throw err;
+    }else{
+      console.log('Test Passed');
     }
   });
 }
@@ -24,17 +28,21 @@ function prepareArgs(request){
   return when.resolve([{}]);
 }
 
-function startTests(server, requests, testWrapper){
+function startTests(server, requests, testWrapper, callback){
+  var tests = [];
   if(!_.isFunction(testWrapper)){
     testWrapper = defaultWrapper;
+    console.log('---NOTICE: No test framework integration provided.');
+    console.log('---See Quickstart in readme to for details on integrating test frameworks (Mocha, Lab, ect).');
   }
   if(_.isArray(requests)){
     _.forEach(requests, function(request){
-      testRunner(server, prepareRequest(request), prepareArgs(request), testWrapper);
+      tests.push(testRunner(server, prepareRequest(request), prepareArgs(request), testWrapper));
     });
   }else if(_.isObject(requests) || _.isString(requests)){
-    testRunner(server, prepareRequest(requests), prepareArgs(requests), testWrapper);
+    tests.push(testRunner(server, prepareRequest(requests), prepareArgs(requests), testWrapper));
   }
+  return nodefn.bindCallback(when.all(_.flatten(tests)), callback);
 }
 
 module.exports = startTests;
