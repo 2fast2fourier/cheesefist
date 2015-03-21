@@ -4,6 +4,7 @@
 var chai = require('chai');
 var Hapi = require('hapi');
 var cheesefist = require('../');
+var payloadUtil = require('../util/payload');
 
 var expect = chai.expect;
 
@@ -47,6 +48,14 @@ server.route([
     expect(request.payload).to.exist.and.to.have.property('testArg', 'stuff');
     reply(request.payload);
   }
+},
+{
+  method: 'POST',
+  path: '/test/info/{info_id}/lookup',
+  handler: function(request, reply){
+    expect(request.payload).to.exist.and.to.have.property('name', 'stuff');
+    reply(request.payload);
+  }
 }
 ]);
 
@@ -76,14 +85,35 @@ describe('Test Payloads', function(){
           return 'world';
         }
       }
-    },{
+    },{//test payload functions and arg rebinding
       url: '/test/info',
       followBy: {
         url: '/test/info/{info_id}/generated',
         method: 'POST',
         payload: {
-          testArg: function(field, history, request){
-            return history.name;
+          testArg: payloadUtil.history('name')
+        },
+        followBy: {
+          url: '/test/info/{info_id}/generated',
+          method: 'POST',
+          payload: {
+            testArg: payloadUtil.historyAt(1, 'name')
+          }
+        }
+      }
+    },{//test payload util atomatic field name detection
+      url: '/test/info',
+      followBy: {
+        url: '/test/info/{info_id}/lookup',
+        method: 'POST',
+        payload: {
+          name: payloadUtil.history()
+        },
+        followBy: {
+          url: '/test/info/{info_id}/lookup',
+          method: 'POST',
+          payload: {
+            name: payloadUtil.historyAt(1)
           }
         }
       }
