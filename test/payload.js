@@ -71,13 +71,7 @@ describe('Test Payloads', function(){
       payload: {
         testArg: 'hello'
       }
-    },{
-      url: '/test/payload/post',
-      method: 'POST',
-      payload: {
-        testArg: 'hello'
-      }
-    },{
+    },{//test custom payload functions
       url: '/test/payload/post/generated',
       method: 'POST',
       payload: {
@@ -85,7 +79,7 @@ describe('Test Payloads', function(){
           return 'world';
         }
       }
-    },{//test payload functions and arg rebinding
+    },{//test payload util functions and keyname rebinding
       url: '/test/info',
       followBy: {
         url: '/test/info/{info_id}/generated',
@@ -110,7 +104,7 @@ describe('Test Payloads', function(){
           name: payloadUtil.history()
         },
         followBy: {
-          url: '/test/info/{info_id}/lookup',
+          url: '/test/info/{[1].info_id}/lookup',
           method: 'POST',
           payload: {
             name: payloadUtil.historyAt(1)
