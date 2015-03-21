@@ -1,0 +1,5 @@
+#Ignore generated coverage reports.
+coverage
+
+#Ignore node_modules folder
+node_modules

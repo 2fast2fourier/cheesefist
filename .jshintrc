@@ -151,5 +151,15 @@
   // Maximum number of statements per function.
   "maxstatements": 25,
   // Maximum cyclomatic complexity.
-  "maxcomplexity": 6
+  "maxcomplexity": 6,
+
+  // Mocha globals for testing
+  "globals": {
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false,
+    "after": false,
+    "afterEach": false
+  }
 }
