@@ -1,5 +1,5 @@
 'use strict';
-//Tests payload functionality.
+//Tests history functionality.
 
 var _ = require('lodash');
 var chai = require('chai');
@@ -167,6 +167,9 @@ describe('Test History Lookup', function(){
           done();
         });
       });
+    }).otherwise(function(err){
+      //the cheesefist call itself will reject for missing/invalid key references
+      expect(err).to.exist;
     });
   });
 
@@ -194,6 +197,9 @@ describe('Test History Lookup', function(){
           done();
         });
       });
+    }).otherwise(function(err){
+      //the cheesefist call itself will reject for missing/invalid key references
+      expect(err).to.exist;
     });
   });
 
@@ -212,6 +218,9 @@ describe('Test History Lookup', function(){
           done();
         });
       });
+    }).otherwise(function(err){
+      //the cheesefist call itself will reject for missing/invalid key references
+      expect(err).to.exist;
     });
   });
 

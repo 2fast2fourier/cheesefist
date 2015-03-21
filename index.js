@@ -29,6 +29,8 @@ function startTests(server, requests, testWrapper, callback){
     });
   }else if(_.isObject(requests) || _.isString(requests)){
     tests.push(testRunner(server, prepareRequest(requests), prepareArgs(requests), testWrapper));
+  }else{
+    throw new Error('Test case invalid: '+requests);
   }
   return nodefn.bindCallback(when.all(_.flatten(tests)), callback);
 }
