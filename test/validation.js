@@ -5,7 +5,6 @@ var _ = require('lodash');
 var chai = require('chai');
 var cheesefist = require('../');
 var server = require('./util/server');
-var payloadUtil = require('../util/payload');
 
 var expect = chai.expect;
 

@@ -92,6 +92,20 @@ server.route([
     reply('Test String');
   }
 },
+{
+  method: 'GET',
+  path: '/test/return/id',
+  handler: function(request, reply){
+    reply({id: 1});
+  }
+},
+{
+  method: 'GET',
+  path: '/test/return/id/{number}',
+  handler: function(request, reply){
+    reply({id: _.parseInt(request.params.number)});
+  }
+}
 ]);
 
 module.exports = server;

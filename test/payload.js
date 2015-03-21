@@ -4,7 +4,7 @@
 var chai = require('chai');
 var Hapi = require('hapi');
 var cheesefist = require('../');
-var payloadUtil = require('../util/payload');
+var lookup = require('../util/lookup');
 
 var expect = chai.expect;
 
@@ -85,13 +85,13 @@ describe('Test Payloads', function(){
         url: '/test/info/{info_id}/generated',
         method: 'POST',
         payload: {
-          testArg: payloadUtil.history('name')
+          testArg: lookup.history('name')
         },
         followBy: {
           url: '/test/info/{info_id}/generated',
           method: 'POST',
           payload: {
-            testArg: payloadUtil.historyAt(1, 'name')
+            testArg: lookup.historyAt(1, 'name')
           }
         }
       }
@@ -101,13 +101,13 @@ describe('Test Payloads', function(){
         url: '/test/info/{info_id}/lookup',
         method: 'POST',
         payload: {
-          name: payloadUtil.history()
+          name: lookup.history()
         },
         followBy: {
           url: '/test/info/{[1].info_id}/lookup',
           method: 'POST',
           payload: {
-            name: payloadUtil.historyAt(1)
+            name: lookup.historyAt(1)
           }
         }
       }
