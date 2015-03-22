@@ -117,8 +117,9 @@ describe('Test Result Validation', function(){
     var suite = {
       url: '/test/users',
       test: {
-        validate: function(res, request, history){
-          expect(res.result).to.be.an('array');
+        validate: function(content, result, request, history){
+          expect(content).to.be.an('array');
+          expect(result).to.be.an('object');
           expect(request).to.be.an('object');
           expect(history).to.be.an('object');
           validateTriggered = true;
@@ -142,12 +143,13 @@ describe('Test Result Validation', function(){
     var suite = {
       url: '/test/users',
       test: {
-        validate: function(res, request, history){
-          expect(res.result).to.be.an('array');
+        validate: function(content, result, request, history){
+          expect(content).to.be.an('array');
+          expect(result).to.be.an('object');
           expect(request).to.be.an('object');
           expect(history).to.be.an('object');
           validateTriggered = true;
-          return false;
+          throw new Error('Intentionally throw in validate function!');
         }
       }
     };
