@@ -13,6 +13,10 @@ function test(request, execute){
   it(request.method+' '+request.url, execute);
 }
 
+function simpleTest(request, execute){
+  execute();
+}
+
 function testShouldFail(request, execute){
   it(request.method+' '+request.url, function(done){
     execute(function(err){
@@ -34,29 +38,35 @@ function shouldNotExist(value){
 describe('Test Helper Validation', function(){
 
   describe('Filter function will filter the result array.', function(){
-    var suite = {
-      url: '/test/users',
-      filter: function(result, request, res){
-        return result.user_id % 2 === 0;
-      }
-    };
-    cheesefist(server, suite, test)
-    .then(function(results){
-      expect(results[0]).to.be.an('array').with.length(2);
+    it('should limit results to 3', function(done){
+      var suite = {
+        url: '/test/users',
+        filter: function(result, request, res){
+          return result.user_id % 2 === 0;
+        }
+      };
+      cheesefist(server, suite, simpleTest)
+      .then(function(results){
+        expect(results[0]).to.be.an('array').with.length(2);
+        done();
+      }).otherwise(done);
     });
   });
 
   describe('filter.valueExists will filter out objects', function(){
-    var suite = [
-    {
-      url: '/test/users',
-      filter: filter.valueExists('fake_key')
-    },
-    '/test/users'];
-    cheesefist(server, suite, test)
-    .then(function(results){
-      expect(results[0]).to.be.an('array').with.length(0);
-      expect(results[1]).to.be.an('array').with.length(4);
+    it('should limit results to 3', function(done){
+      var suite = [
+      {
+        url: '/test/users',
+        filter: filter.valueExists('fake_key')
+      },
+      '/test/users'];
+      cheesefist(server, suite, simpleTest)
+      .then(function(results){
+        expect(results[0]).to.be.an('array').with.length(0);
+        expect(results[1]).to.be.an('array').with.length(4);
+        done();
+      }).otherwise(done);
     });
   });
 
@@ -68,11 +78,26 @@ describe('Test Helper Validation', function(){
         filter: filter.toBoolean('admin')
       },
       '/test/users'];
-      cheesefist(server, suite, function(request, execute){
-        execute();
-      })
+      cheesefist(server, suite, simpleTest)
       .then(function(results){
         expect(results[0]).to.be.an('array').with.length(2);
+        expect(results[1]).to.be.an('array').with.length(4);
+        done();
+      }).otherwise(done);
+    });
+  });
+
+  describe('filter.limitResult will limit output', function(){
+    it('should limit results to 3', function(done){
+      var suite = [
+      {
+        url: '/test/users',
+        filter: filter.limitResult(3)
+      },
+      '/test/users'];
+      cheesefist(server, suite, simpleTest)
+      .then(function(results){
+        expect(results[0]).to.be.an('array').with.length(3);
         expect(results[1]).to.be.an('array').with.length(4);
         done();
       }).otherwise(done);

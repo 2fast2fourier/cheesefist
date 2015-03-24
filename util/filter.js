@@ -13,5 +13,12 @@ module.exports = {
     return function(result, request, res){
       return _.has(result, key) && !!result[key];
     };
+  },
+  limitResult: function(limit){
+    var count = 0;
+    return function(result, request, res){
+      count++;
+      return count <= limit;
+    };
   }
 };
