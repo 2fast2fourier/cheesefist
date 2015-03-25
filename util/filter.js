@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('lodash');
-var historyUtil = require('../lib/history');
 
 module.exports = {
   valueExists: function(key){

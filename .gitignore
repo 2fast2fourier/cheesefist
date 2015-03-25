@@ -3,3 +3,7 @@ coverage
 
 #Ignore node_modules folder
 node_modules
+
+#Metafiles
+.idea/
+*.iml
