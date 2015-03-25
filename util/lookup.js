@@ -5,13 +5,13 @@ var historyUtil = require('../lib/history');
 
 module.exports = {
   history: function(key){
-    return function(field, history, request){
-      return historyUtil.lookup(request, history, key || field);
+    return function(field, args, request){
+      return historyUtil.lookup(request, args, key || field);
     };
   },
   historyAt: function(position, key){
-    return function(field, history, request){
-      return historyUtil.lookupAtPosition(request, history, key || field, position);
+    return function(field, args, request){
+      return historyUtil.lookupAtPosition(request, args, key || field, position);
     };
   }
 };

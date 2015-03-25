@@ -62,11 +62,11 @@ describe('Test History Lookup', function(){
     };
     cheesefist(server, suite, function(request, execute){
       it(request.method+' '+request.url, function(done){
-        execute(function(err, result){
+        execute(function(err, results){
           if(request.override){
-            expect(result[0]).to.exist.and.have.property('history_id', 1);
+            expect(results[0][0].content).to.exist.and.have.property('history_id', 1);
           }else{
-            expect(result[0]).to.exist.and.have.property('history_id', 2);
+            expect(results[0][0].content).to.exist.and.have.property('history_id', 2);
           }
           done();
         });
@@ -92,10 +92,10 @@ describe('Test History Lookup', function(){
         execute(function(err, result){
           expect(err).to.not.exist;
           if(request.override){
-            expect(result[0]).to.exist.and.have.property('user_id', 4);
+            expect(result[0][0].content).to.exist.and.have.property('user_id', 4);
           }else{
-            expect(result[0]).to.exist.and.have.property('id', 4);
-            expect(result[0]).to.not.have.property('user_id');
+            expect(result[0][0].content).to.exist.and.have.property('id', 4);
+            expect(result[0][0].content).to.not.have.property('user_id');
           }
           done();
         });

@@ -3,7 +3,6 @@
 var _ = require('lodash');
 var when = require('when');
 var nodefn = require('when/node');
-var sequence = require('when/sequence');
 var testRunner = require('./lib/testRunner');
 var prepareRequest = require('./lib/prepareRequest');
 var validationSuite = require('require-dir')('./validation');
@@ -17,11 +16,18 @@ function sanityCheck(requests, options){
 
 function prepareArgs(request){
   if(_.isArray(request.args)){
-    return when.resolve(request.args);
-  }else if(_.isObject(request.args)){
-    return when.resolve([request.args]);
+    return when.resolve(_.map(request.args, function(args){
+      return {
+        content: args,
+        history: [{content: args}]
+      }
+    }));
+  }else{
+    return when.resolve([{
+      content: request.args,
+      history: [{content: request.args}]
+    }]);
   }
-  return when.resolve([{}]);
 }
 
 function startTests(server, requests, options){
