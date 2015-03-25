@@ -117,8 +117,9 @@ describe('Test Result Validation', function(){
     var suite = {
       url: '/test/users',
       test: {
-        validate: function(res, request, history){
-          expect(res.result).to.be.an('array');
+        validate: function(content, result, request, history){
+          expect(content).to.be.an('array');
+          expect(result).to.be.an('object');
           expect(request).to.be.an('object');
           expect(history).to.be.an('object');
           validateTriggered = true;
@@ -137,17 +138,41 @@ describe('Test Result Validation', function(){
     });
   });
 
+  describe('Global manual validation function will be called', function(){
+    var validateTriggered = false;
+    var options = {
+      validate: function(content, result, request, history){
+        expect(content).to.be.an('array');
+        expect(result).to.be.an('object');
+        expect(request).to.be.an('object');
+        expect(history).to.be.an('object');
+        validateTriggered = true;
+        return true;
+      }
+    };
+    cheesefist(server, '/test/users', function(request, execute){
+      it(request.method+' '+request.url, function(done){
+        execute(function(err){
+          expect(err).to.not.exist;
+          expect(validateTriggered).to.equal(true);
+          done();
+        });
+      });
+    }, options);
+  });
+
   describe('Manual validation function can fail a test', function(){
     var validateTriggered = false;
     var suite = {
       url: '/test/users',
       test: {
-        validate: function(res, request, history){
-          expect(res.result).to.be.an('array');
+        validate: function(content, result, request, history){
+          expect(content).to.be.an('array');
+          expect(result).to.be.an('object');
           expect(request).to.be.an('object');
           expect(history).to.be.an('object');
           validateTriggered = true;
-          return false;
+          throw new Error('Intentionally throw in validate function!');
         }
       }
     };
@@ -246,6 +271,20 @@ describe('Test Result Validation', function(){
       cheesefist(server, suite, testShouldFail).done(shouldNotExist, shouldExist);
     });
 
+  });
+
+  it('should immediately throw if an invalid validation plugin is added via options', function(){
+    try{
+      cheesefist(server, '/test/users', test, {
+        validation: {
+          invalidate: 'bad validation plugin'
+        }
+      });
+      //shouldn't reach this.
+      expect(false).to.equal(true);
+    }catch(err){
+      expect(err.message).to.include('Invalid validation');
+    }
   });
 
 

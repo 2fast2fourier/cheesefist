@@ -35,7 +35,7 @@ describe('Test History Lookup', function(){
               resultFields: ['history_id', 'name']
             },
             followBy: {
-              url: '/test/users/{user_id}/history/{history_id}',
+              url: '/test/users/{user_id}/history/{[4].history_id}',
               test: {
                 resultFields: ['history_id', 'name']
               }

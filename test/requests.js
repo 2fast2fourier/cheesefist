@@ -6,6 +6,7 @@ var chai = require('chai');
 var Hapi = require('hapi');
 var cheesefist = require('../');
 var server = require('./util/server');
+var filter = require('../util/filter');
 
 var expect = chai.expect;
 
@@ -108,6 +109,17 @@ describe('Test Request Syntax', function(){
         expect(err).to.exist;
         done();
       }
+    });
+  });
+
+  describe('Should accept callback without options', function(){
+    it('Should call callback', function(done){
+      cheesefist(server, '/test/users', function(request, execute){
+          execute();
+        }, function(err, results){
+          expect(results).to.exist;
+          done(err);
+        });
     });
   });
 

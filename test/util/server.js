@@ -28,10 +28,10 @@ var userHistoryValues = [
 ];
 
 var userValues = [
-  { user_id: 1, username: 'Reggie' },
-  { user_id: 2, username: 'Greg' },
-  { user_id: 3, username: 'Bob' },
-  { user_id: 4, username: 'Mr. Name' }
+  { user_id: 1, username: 'Reggie', admin: true },
+  { user_id: 2, username: 'Greg', admin: false },
+  { user_id: 3, username: 'Bob', admin: false },
+  { user_id: 4, username: 'Mr. Name', admin: true }
 ];
 
 server.route([
