@@ -1,6 +1,6 @@
 ## Settings
 ### Cheesefist `options` Object
-Currently supported syntax:
+Current supported syntax:
 ```
 {
   validate: function(content, response, request, context){
@@ -14,9 +14,41 @@ Currently supported syntax:
       // This allows for test-object plugins.
       // See Validation Plugins below.
     }
+  },
+  test: {// Specify a set of default validation cases to apply to all requests
+    statusCode: 201, // expect 201 as our default statusCode check instead of 200
+    type: 'array' // enables the `type` check on all requests, expecting an 'array'
   }
 }
 ```
+
+### Global Validation
+An `options` object may contain a `test` object, which has the same syntax and options as the request `test` objects. If a test case is enabled here, it will apply to all requests unless otherwise overridden at the request level.
+
+For example:
+```
+var options = {
+  test: {
+    statusCode: false, //disable default statusCode test
+    type: 'array'
+  }
+}
+
+var requests = [
+  {
+    url: '/users',
+    followBy: {
+      url: '/users/{user_id}/history',
+      test: {
+        statusCode: 200
+      }
+    }
+  }
+]
+```
+With these rules, the `/users` test case will be validated against the global tests in `options`. The `/users/{user_id}/history` request will validate against the locally-defined `statusCode: 200` test, and also validate with the globally-defined `type` test.
+
+In addition, if `test: false` is defined for any specific request, it will skip global tests. If `options.test = false`, all default tests are disabled (such as statusCode).
 
 ### Validation Plugins
 Additional `test` functionality can be added as plugins via the `options` object. When a test plugin is added, and a request test case specifies a value for that test plugin, it will be executed during response validation.
@@ -52,4 +84,4 @@ Any tests that include a rule with the same name as the custom plugin will be ex
 - `content` is the content body from the [`server.inject`](http://hapijs.com/api#serverinjectoptions-callback) result object, `res.result`.
 - `result` is the full response object from [`server.inject`](http://hapijs.com/api#serverinjectoptions-callback).
 - `request` is the request ruleset for this specific stage in the test suite, including `test` object.
-- `context` is the most recent response in the request chain, with `context.content` for accessing the data and `context.history` for accessing earlier requests.
+- `context` is the most recent response in the request chain, with `context.content` for accessing the content body and `context.history` for accessing earlier requests.
