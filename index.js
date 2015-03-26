@@ -30,15 +30,24 @@ function prepareArgs(request){
   }
 }
 
+function prepareOptions(options){
+  options.validation = _.assign({}, validationSuite, options.validation);
+  if(options.test === undefined){
+    options.test = {
+      statusCode: 200
+    }
+  }
+}
+
 function startTests(server, requests, options){
   var tests = [];
 
   if(_.isArray(requests)){
     _.forEach(requests, function(request){
-      tests.push(testRunner(server, prepareRequest(request), prepareArgs(request), options));
+      tests.push(testRunner(server, prepareRequest(request, options), prepareArgs(request), options));
     });
   }else if(_.isObject(requests) || _.isString(requests)){
-    tests.push(testRunner(server, prepareRequest(requests), prepareArgs(requests), options));
+    tests.push(testRunner(server, prepareRequest(requests, options), prepareArgs(requests), options));
   }else{
     throw new Error('Test case invalid: '+requests);
   }
@@ -53,13 +62,16 @@ function cheesefist(server, requests, testWrapper, options, callback){
     throw new Error('Please provide test framework wrapper.');
   }
 
-  options = options || {};
   if(_.isFunction(options)){
     callback = options;
     options = {};
+  }else if(_.isObject(options)){
+    options = _.cloneDeep(options);
+  }else{
+    options = {};
   }
   options.testWrapper = testWrapper;
-  options.validation = _.assign({}, validationSuite, options.validation);
+  prepareOptions(options);
 
   sanityCheck(requests, options);
 

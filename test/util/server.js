@@ -113,6 +113,13 @@ server.route([
     expect(request.payload).to.exist.and.to.have.property(request.params.arg, request.params.value);
     reply(request.payload);
   }
+},
+{
+  method: 'GET',
+  path: '/test/response/{code}',
+  handler: function(request, reply){
+    reply({}).code(_.parseInt(request.params.code));
+  }
 }
 ]);
 
