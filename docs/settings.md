@@ -3,14 +3,14 @@
 Currently supported syntax:
 ```
 {
-  validate: function(content, response, request, history){
+  validate: function(content, response, request, context){
     // This will execute with every request call, allowing for global validations.
     // To fail a test:
     // throw new Error(message)
     // The error instance will propegate up to the test framework.
   },
   validation: {
-    testName: function(value, content, result, request, history){
+    testName: function(value, content, result, request, context){
       // This allows for test-object plugins.
       // See Validation Plugins below.
     }
@@ -25,7 +25,7 @@ To include a test plugin in the validation suite, add it to the `options` object
 ```
 var options = {
   validations: {
-    nameContains: function(value, content, result, request, history){
+    nameContains: function(value, content, result, request, context){
       if(content.username.indexOf(value) === -1){
         throw new Error('Name does not contain '+value);
       }
@@ -52,4 +52,4 @@ Any tests that include a rule with the same name as the custom plugin will be ex
 - `content` is the content body from the [`server.inject`](http://hapijs.com/api#serverinjectoptions-callback) result object, `res.result`.
 - `result` is the full response object from [`server.inject`](http://hapijs.com/api#serverinjectoptions-callback).
 - `request` is the request ruleset for this specific stage in the test suite, including `test` object.
-- `history` is the most recent response in the request chain, with `_history` for accessing earlier requests.
+- `context` is the most recent response in the request chain, with `context.content` for accessing the data and `context.history` for accessing earlier requests.

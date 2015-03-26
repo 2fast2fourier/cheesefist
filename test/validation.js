@@ -117,11 +117,11 @@ describe('Test Result Validation', function(){
     var suite = {
       url: '/test/users',
       test: {
-        validate: function(content, result, request, history){
+        validate: function(content, result, request, context){
           expect(content).to.be.an('array');
           expect(result).to.be.an('object');
           expect(request).to.be.an('object');
-          expect(history).to.be.an('object');
+          expect(context).to.be.an('object').that.has.property('history').that.is.an('array');
           validateTriggered = true;
           return true;
         }
@@ -141,11 +141,11 @@ describe('Test Result Validation', function(){
   describe('Global manual validation function will be called', function(){
     var validateTriggered = false;
     var options = {
-      validate: function(content, result, request, history){
+      validate: function(content, result, request, context){
         expect(content).to.be.an('array');
         expect(result).to.be.an('object');
         expect(request).to.be.an('object');
-        expect(history).to.be.an('object');
+        expect(context).to.be.an('object').that.has.property('history').that.is.an('array');
         validateTriggered = true;
         return true;
       }
@@ -166,11 +166,11 @@ describe('Test Result Validation', function(){
     var suite = {
       url: '/test/users',
       test: {
-        validate: function(content, result, request, history){
+        validate: function(content, result, request, context){
           expect(content).to.be.an('array');
           expect(result).to.be.an('object');
           expect(request).to.be.an('object');
-          expect(history).to.be.an('object');
+          expect(context).to.be.an('object').that.has.property('history').that.is.an('array');
           validateTriggered = true;
           throw new Error('Intentionally throw in validate function!');
         }

@@ -2,117 +2,79 @@
 //Tests payload functionality.
 
 var chai = require('chai');
-var Hapi = require('hapi');
 var cheesefist = require('../');
+var server = require('./util/server');
 var lookup = require('../util/lookup');
 
 var expect = chai.expect;
-
-var server = new Hapi.Server();
-server.connection({
-  host: 'localhost',
-  port: 9876
-});
-
-server.route([
-{
-  method: 'POST',
-  path: '/test/payload/post',
-  handler: function(request, reply){
-    expect(request.payload).to.exist.and.to.have.property('testArg', 'hello');
-    reply(request.payload);
-  }
-},
-{
-  method: 'POST',
-  path: '/test/payload/post/generated',
-  handler: function(request, reply){
-    expect(request.payload).to.exist.and.to.have.property('testArg', 'world');
-    reply(request.payload);
-  }
-},
-{
-  method: 'GET',
-  path: '/test/info',
-  handler: function(request, reply){
-    reply({
-      info_id: 1,
-      name: 'stuff'
-    });
-  }
-},
-{
-  method: 'POST',
-  path: '/test/info/{info_id}/generated',
-  handler: function(request, reply){
-    expect(request.payload).to.exist.and.to.have.property('testArg', 'stuff');
-    reply(request.payload);
-  }
-},
-{
-  method: 'POST',
-  path: '/test/info/{info_id}/lookup',
-  handler: function(request, reply){
-    expect(request.payload).to.exist.and.to.have.property('name', 'stuff');
-    reply(request.payload);
-  }
-}
-]);
 
 function test(request, execute){
   it(request.method+' '+request.url, execute);
 }
 
 describe('Test Payloads', function(){
-  describe('Basic POST', function(done){
-    var suite = [{
-      url: '/test/payload/post',
-      method: 'POST',
-      payload: {
-        testArg: 'hello'
-      }
-    },{//test custom payload functions
-      url: '/test/payload/post/generated',
-      method: 'POST',
-      payload: {
-        testArg: function(field, history, request){
-          return 'world';
-        }
-      }
-    },{//test payload util functions and keyname rebinding
-      url: '/test/info',
-      followBy: {
-        url: '/test/info/{info_id}/generated',
+  describe('Basic POST features', function(){
+    var suite = [
+      {
+        url: '/test/payload/post/testArg/hello',
         method: 'POST',
         payload: {
-          testArg: lookup.history('name')
-        },
-        followBy: {
-          url: '/test/info/{info_id}/generated',
-          method: 'POST',
-          payload: {
-            testArg: lookup.historyAt(1, 'name')
-          }
+          testArg: 'hello'
         }
-      }
-    },{//test payload util atomatic field name detection
-      url: '/test/info',
-      followBy: {
-        url: '/test/info/{info_id}/lookup',
+      },
+      {//test custom payload functions
+        url: '/test/payload/post/fnArg/generated',
         method: 'POST',
         payload: {
-          name: lookup.history()
-        },
-        followBy: {
-          url: '/test/info/{[1].info_id}/lookup',
-          method: 'POST',
-          payload: {
-            name: lookup.historyAt(1)
+          fnArg: function(field, context, request){
+            return 'generated';
           }
         }
+      },
+      {//test payload util functions and keyname rebinding
+        url: '/test/users/1',
+        followBy: {
+          url: '/test/payload/post/name/Reggie',
+          method: 'POST',
+          payload: {
+            name: lookup.history('username')
+          },
+          followBy: {
+            url: '/test/payload/post/name/Reggie',
+            method: 'POST',
+            payload: {
+              name: lookup.historyAt(1, 'username')
+            }
+          }
+        }
+      },
+      {//test payload util automatic field name detection
+        url: '/test/users/2',
+        followBy: {
+          url: '/test/payload/post/username/Greg',
+          method: 'POST',
+          payload: {
+            username: lookup.history()
+          },
+          followBy: {
+            url: '/test/payload/post/username/Greg',
+            method: 'POST',
+            payload: {
+              username: lookup.historyAt(1)
+            }
+          }
+        }
+      },
+      {//test payload generation function
+        url: '/test/payload/post/full/gen',
+        method: 'POST',
+        payload: function(field, context, request){//returns the full payload object instead of evaluating specific fields
+          return {
+            full: 'gen'
+          };
+        }
       }
-    }];
-
+    ];
 
     cheesefist(server, suite, test);
   });
