@@ -2,7 +2,7 @@
 ### Cheesefist `options` Object
 Current supported syntax:
 ```
-{
+var options = {
   validate: function(content, response, request, context){
     // This will execute with every request call, allowing for global validations.
     // To fail a test:
@@ -19,7 +19,9 @@ Current supported syntax:
     statusCode: 201, // expect 201 as our default statusCode check instead of 200
     type: 'array' // enables the `type` check on all requests, expecting an 'array'
   }
-}
+};
+
+cheesefist(server, testSuite, testFramework, options);
 ```
 
 ### Global Validation
@@ -34,7 +36,7 @@ var options = {
   }
 }
 
-var requests = [
+var testSuite = [
   {
     url: '/users',
     followBy: {
@@ -48,7 +50,7 @@ var requests = [
 ```
 With these rules, the `/users` test case will be validated against the global tests in `options`. The `/users/{user_id}/history` request will validate against the locally-defined `statusCode: 200` test, and also validate with the globally-defined `type` test.
 
-In addition, if `test: false` is defined for any specific request, it will skip global tests. If `options.test = false`, all default tests are disabled (such as statusCode).
+In addition, if `test: false` is defined for any specific request, it will skip globally-defined tests. If `options.test = false`, all default tests are disabled (such as statusCode).
 
 ### Validation Plugins
 Additional `test` functionality can be added as plugins via the `options` object. When a test plugin is added, and a request test case specifies a value for that test plugin, it will be executed during response validation.
