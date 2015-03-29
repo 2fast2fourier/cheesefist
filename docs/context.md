@@ -1,7 +1,7 @@
 ## Request Context
 A context object contains the result state of each request in the current chain. This object is useful if you need to write custom validation plugins or payload generation functions.
 
-In any custom callback includes a `context` object, the `context` will either be the result state of the parent request (in payload/override generation), or the result state of the current request (in a validation plugin).
+In any custom callback includes a `context` object, the `context` will be the result state of the parent request.
 
 ### Context Structure
 ```
