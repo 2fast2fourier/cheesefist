@@ -78,10 +78,13 @@ var faker = require('faker');
     url: '/users/{user_id}/email',
     method: 'POST',
     payload: {
-      user_id: lookup.history('user_id'),
+        // this will lookup the `username` field from the request history for each request.
+      username: lookup.history('username'), 
       email_address: function(field, context, request){
+        // this will generate a fake email for each request.
         return faker.internet.email();
-      }
+      },
+      some_number: 98765
     },
     test: 201
   }
