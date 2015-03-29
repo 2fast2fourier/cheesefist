@@ -1,22 +1,34 @@
 # Cheesefist
-#### A recursive test runner for Hapi REST APIs
+#### A recursive, exhaustive and branching test runner for Hapi REST-like APIs
 [![Build Status](https://travis-ci.org/2fast2fourier/cheesefist.svg?branch=master)](https://travis-ci.org/2fast2fourier/cheesefist)
 
-Cheesefist executes requests against a set of endpoints, validating the response. Requests can be chained recursively,
-with the results from previous requests available for keyword substitution in the url path. This is most useful for running requests against a large testing dataset, validating that every response is within expectations.
+##### Recursive
+Each request set can be followed by children requests (`followBy`), the results of each request are made available to their children. A 'request chain' is the logical progression of requests, from the first test to the last child in that branch. Any given test may include multiple `followBy` requests, causing a *Branch*.
 
-Cheesefist is designed to integrate with most test frameworks, like Mocha or Lab. See Quickstart for an example using Mocha.
+##### Exhaustive
+If a request returns an array of objects, each object is used to execute the next stage. This means a request to a browse-style endpoint followed by another request, will trigger an execution of that followBy request for EVERY object from the browse request. This also implies that recursive calls to multi-item endpoints will potentially create very large execution sets, but this can also be desirable for exaustively testing a dataset.
 
-##### NOTE:
-This is an early release, syntax and functionality may change in the future. Response `test` cases are still in active development, expect new functionality and changes to existing features.
+##### Branching
+Any request can have any number of `followBy` requests. All of those children share the same parent state but are *independent* of each sibling. This means you can effectively branch your test suite, allowing each branch to continue down separate test paths. This can be useful for de-duplicating the early parts of a request chain.
+
+
+*Please note:* This is an early release, syntax and functionality may change in the future. Response `test` cases are still in active development, expect new functionality and changes to existing features.
 
 See [`changelog.md`](changelog.md) for a full list of breaking changes.
 
 ## Usage
-The test framework uses a set of requests, executing each request and validating the output against expected.
+Cheesefist is designed to integrate with most test frameworks, like Mocha or Lab. See Quickstart for an example using Mocha.
 
-Each request object represents a type of request, with a given `url` schema and (optionally) `payload`/`header` values. The optional `test` value is a set of rules that can be used to validate the response from the request. The results from each request can be passed onto a set of `followBy` tests, and those tests can use the result variables in their url construction.
+#### Syntax
+The `cheesefist(server, testSuite, testFn, options, callback)` call will start execution on a recursive [`testSuite`](#_syntax), calling `testFn` to integrate into a test framework, with optional `options` and/or `callback`.
+- `server` is a composed Hapi instance that exposes `server.inject()` for executing requests. It is not necessary to `start()` this server.
+- A `testSuite` is comprised of one or more [*Requests*](#_syntax), each of which may recurse to create a request chain.
+- The `testFn` is a function that can invoke the external test framework (like Mocha or Lab). See [*Quickstart*](#_quickstart) below. It will be executed once for every request object in `testSuite` and may be responsible for multiple hits to `server.inject` in a single call. 
+- [`options`](docs/settings.md) allows for custom validation plugins and global validation settings, with other features to be added in the future. 
+- `callback` provides a node-style callback for the full execution run. If any error throws, if will be passed into the `err` field of the callback. Including `callback` disables promise functionality.
+- The `cheesefist()` call returns a promise, fullfilled with the same values as `callback`. Both callback and promise are optional and can be safely ignored.
 
+<a id="_quickstart"></a>
 ## Quickstart
 ```
 var cheesefist = require('cheesefist');
@@ -63,7 +75,7 @@ function runTest(request, execute){
   it('TEST '+request.method+' '+request.url, function(done){
     execute(done);
     /*
-    *  The execute function is also a promise, and mocha can handle promises.
+    *  The execute function will return a promise, and mocha can handle a promise.
     *  So you can just 'return execute()'' instead of using the 'done' callback.
     *  Or shorten further:
     *  it('Testing '+request.method+' '+request.url, execute);
@@ -79,7 +91,9 @@ describe('API Tests', function(){
 See [Examples](docs/examples.md) for detailed test cases.
 
 ## Syntax
+<a id="_syntax"></a>
 ##### Request
+A test suite is comprised of one or more *Requests*, each representing a potential set of requests. If requests are defined recursively via `followBy`, values can be assigned from previous requests in that chain via URL `{placeholders}` or `payload`/`override` lookup functions.
 ```
 {
   method: 'GET',
@@ -105,10 +119,10 @@ See [Examples](docs/examples.md) for detailed test cases.
 -   `test`: Test arguments, see <a href="#_testing">Testing</a>. (Optional, default: statusCode 200)
 -   `followBy`: An array of tests to execute, with the results of the previous tests available for [URL Composition](docs/composition.md). (Optional)
 
-## URL Composition
-The `url` field in a request can include placeholders `{keyname}` or `{[historyPosition].keyname}`, those placeholders are automatically replaced with values from `args`, `overrides`, or the result of any parent tests.
-
 *Important:* See [URL Composition](docs/composition.md) docs for details on how URLs and requests are generated.
+
+## URL Composition
+The `url` field in a request can include placeholders `{keyname}` or `{[historyPosition].keyname}`, those placeholders are automatically replaced with values from `args`, `overrides`, or the result of any parent tests. See [URL Composition](docs/composition.md) for more detail.
 
 <a id="_testing"></a>
 ### Testing

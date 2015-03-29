@@ -24,6 +24,7 @@ var options = {
 cheesefist(server, testSuite, testFramework, options);
 ```
 
+<a id="_global_validation"></a>
 ### Global Validation
 An `options` object may contain a `test` object, which has the same syntax and options as the request `test` objects. If a test case is enabled here, it will apply to all requests unless otherwise overridden at the request level.
 
@@ -52,6 +53,7 @@ With these rules, the `/users` test case will be validated against the global te
 
 In addition, if `test: false` is defined for any specific request, it will skip globally-defined tests. If `options.test = false`, all default tests are disabled (such as statusCode).
 
+<a id="_plugins"></a>
 ### Validation Plugins
 Additional `test` functionality can be added as plugins via the `options` object. When a test plugin is added, and a request test case specifies a value for that test plugin, it will be executed during response validation.
 
