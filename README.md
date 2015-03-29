@@ -1,22 +1,33 @@
 # Cheesefist
-#### A recursive test runner for Hapi REST APIs
+#### A recursive, exhaustive and branching test runner for Hapi REST-like APIs
 [![Build Status](https://travis-ci.org/2fast2fourier/cheesefist.svg?branch=master)](https://travis-ci.org/2fast2fourier/cheesefist)
 
-Cheesefist executes requests against a set of endpoints, validating the response. Requests can be chained recursively,
-with the results from previous requests available for keyword substitution in the url path. This is most useful for running requests against a large testing dataset, validating that every response is within expectations.
+##### Recursive
+Each request can be followed by children requests (`followBy`), the results of each request are made available to their children. A 'request chain' is the logical progression of requests, from the first test to the last child in that branch. Any given test may include multiple `followBy` requests, causing a *branch*.
 
-Cheesefist is designed to integrate with most test frameworks, like Mocha or Lab. See Quickstart for an example using Mocha.
+##### Exhaustive
+If a request returns an array of objects, each object is used to execute the next stage. This means a request to a browse-style endpoint followed by another request, will trigger an execution of that followBy request for EVERY object from the browse request. This also implies that recursive calls to multi-item endpoints will potentially create very large execution sets, but this can also be desirable for exhaustively testing a dataset.
 
-##### NOTE:
-This is an early release, syntax and functionality may change in the future. Response `test` cases are still in active development, expect new functionality and changes to existing features.
+##### Branching
+Any request can have any number of `followBy` requests. Those children will share the same parent state but are *independent* of each other sibling. This means you can effectively branch your test suite, allowing each branch to continue down separate test paths. This can be useful for de-duplicating the early parts of a request chain.
+
+*Please note:* This is an early release, syntax and functionality may change in the future. Response `test` cases are still in active development, expect new functionality and changes to existing features.
+
+See [`changelog.md`](changelog.md) for a full list of breaking changes.
 
 ## Usage
-The test framework uses a set of requests, executing each request and validating the output against expected.
+Cheesefist is designed to integrate with most test frameworks, like Mocha or Lab. See Quickstart for an example using Mocha.
 
-Each request object represents a type of request, with a given `url` schema and (optionally) `payload`/`header` values. The optional `test` value is a set of rules that can be used to validate the response from the request. The results from each request can be passed onto a set of `followBy` tests, and those tests can use the result variables in their url construction.
+#### Syntax
+The `cheesefist(server, testSuite, testFn, options, callback)` call will start execution on a recursive [`testSuite`](#_syntax), calling `testFn` to integrate into a test framework, with optional `options` and/or `callback`.
+- `server` is a composed Hapi instance that exposes `server.inject()` for executing requests. It is not necessary to `start()` this server.
+- A `testSuite` is comprised of one or more [*Requests*](#_syntax), each of which may recurse to create a request chain.
+- The `testFn` is a function that can invoke the external test framework (like Mocha or Lab). See [*Quickstart*](#_quickstart) below. It will be executed once for every request object in `testSuite` and may be responsible for multiple hits to `server.inject` in a single call. 
+- (Optional) [`options`](docs/settings.md) allows for custom validation plugins and global validation settings, with other features to be added in the future. 
+- (Optional) `callback` provides a node-style callback for the full execution run. If any error throws, if will be passed into the `err` field of the callback. Including `callback` disables promise functionality.
+- The `cheesefist()` call returns a promise, fullfilled with the same values as `callback`. Both callback and promise are optional and can be safely ignored.
 
-If a test fails but that request has `followBy` requests, those child requests are preemptively failed with the url of the parent test that failed.
-
+<a id="_quickstart"></a>
 ## Quickstart
 ```
 var cheesefist = require('cheesefist');
@@ -63,7 +74,7 @@ function runTest(request, execute){
   it('TEST '+request.method+' '+request.url, function(done){
     execute(done);
     /*
-    *  The execute function is also a promise, and mocha can handle promises.
+    *  The execute function will return a promise, and mocha can handle a promise.
     *  So you can just 'return execute()'' instead of using the 'done' callback.
     *  Or shorten further:
     *  it('Testing '+request.method+' '+request.url, execute);
@@ -76,10 +87,12 @@ describe('API Tests', function(){
   cheesefist(server, testSuite, runTest);
 });
 ```
-See <a href="#_example">Examples</a> for a more detailed test case.
+See [Examples](docs/examples.md) for detailed test cases.
 
 ## Syntax
+<a id="_syntax"></a>
 ##### Request
+A test suite is comprised of one or more *Requests*, each representing a potential set of requests. If requests are defined recursively via `followBy`, values can be assigned from previous requests in that chain via URL `{placeholders}` or `payload`/`override` lookup functions.
 ```
 {
   method: 'GET',
@@ -87,128 +100,32 @@ See <a href="#_example">Examples</a> for a more detailed test case.
   args: {
     user_id: 1
   },
+  //override: {...},
+  //payload: {...},
   test: {
     type: 'object',
     statusCode: 200,
     resultFields: ['id', 'name', 'description']
   },
-  followBy: [ TEST, ... ]
+  followBy: [ REQUEST, ... ]
 }
 ```
 -   `url`: URL schema for request. Can use value placeholders `{key}` or `{[history].key}`, see <a href="#_urlcomposition">URL Composition</a>. (Required)
 -   `method`: HTTP method for the request. GET, POST, PUT, ect. (Optional, default: `GET`)
 -   `args`: An argument object to be used for URL composition, only valid on top-most request of a chain. If provided an array, the request will execute once for each element. (Optional)
--   `override`: An argument object to be used for URL composition, values contained here will override any history values when composing the URL. (Optional)
+-   `override`: An argument object to be used for URL composition, values contained here will override any history values when composing the URL. (Optional) Can use lookup/generator functions, see [Generator example](docs/examples.md#_payload)
+-   `payload`: Payload values for `POST`/`PUT` requests. (Optional) Can use lookup/generator functions, see [Generator example](docs/examples.md#_payload)
 -   `test`: Test arguments, see <a href="#_testing">Testing</a>. (Optional, default: statusCode 200)
--   `followBy`: An array of tests to execute, with the results of the previous tests available for <a href="#_urlcomposition">URL composition</a>. (Optional)
+-   `followBy`: An array of tests to execute, with the results of the previous tests available for [URL Composition](docs/composition.md). (Optional)
 
-<a id="_urlcomposition"></a>
-### URL Composition
-The `url` field in a request can include placeholders `{keyname}`, those placeholders are automatically replaced with values from `args`, `overrides`, or the result of any parent tests.
+*Important:* See [URL Composition](docs/composition.md) docs for details on how URLs and requests are generated.
 
-The order of precedence is as follows:
--  Values from the `overrides` object attached to that request. Overrides DO NOT propegate between requests in a chain.
--  Response values from the request history of that test chain, starting from the immediate parent and working backwards to the beginning.
--  Values from the `args` object in the root request. These values are also available as `{[0].keyname}` as a history request.
-
-Note: The `args` object is only valid on the first request of a chain, `args` values attached to `followBy` requests will be ignored. (This may change in the near future.)
-
-##### Example
-Given the following test suite:
-```
-{
-  url: '/users',
-  followBy: {
-    method: 'PUT',
-    url: '/users/{user_id}',
-    payload: {
-      name: ...
-    }
-  }
-}
-```
-If the first request returns an array:
-```
-[
-  {
-    user_id: 5
-  },
-  {
-    user_id: 7
-  },
-  {
-    user_id: 8
-  }
-]
-```
-Then the `followBy` test will generate these requests:
-```
-PUT /users/5
-PUT /users/7
-PUT /users/8
-```
-
-The result set from each request is combined for the `followBy` tests, this means that recursively requesting against browse endpoints may generate a very large number of hits. Example:
-```
-{
-  url: '/users',
-  followBy: {
-    url: '/users/{user_id}/email_addresses',
-    followBy: {
-      method: 'DELETE',
-      url: '/users/{user_id}/email_addresses/{email_address_id}'
-    }
-  }
-}
-```
-Assuming that each user has 3 email addresses, the innermost `followBy` test will generate this combined request set:
-```
-DELETE /users/5/email_addresses/1
-DELETE /users/5/email_addresses/3
-DELETE /users/5/email_addresses/4
-DELETE /users/7/email_addresses/5
-DELETE /users/7/email_addresses/7
-DELETE /users/7/email_addresses/12
-DELETE /users/8/email_addresses/13
-DELETE /users/8/email_addresses/16
-DELETE /users/8/email_addresses/23
-```
-
-#### History References
-In case of key name conflicts, a placeholder can also reference a specific point in the request chain history using `{[x].keyname}`. `x` is a number referencing the position in the request chain. Specifying a history position bypasses the order of precedence described above. If the referenced key does not exist at the history position specified, the test will fail immediately.
-
-The history position starts with `[0]`, which is the `args` value on the root test, and `[1]` is the result from the first request, `[2]` the results from the first `followBy` test, and so-on.
-
-Example:
-```
-{
-  url: '/users/{user_id}',
-  args: [
-  {
-    user_id: 2
-  },
-  {
-    user_id: 4
-  }],
-  followBy: {
-    url: '/users/{user_id}/email_addresses',
-    followBy: {
-      method: 'DELETE',
-      url: '/users/{user_id}/email_addresses/{email_address_id}'
-    }
-  }
-}
-```
-At the point URL composition executes for `/users/{user_id}/email_addresses/{email_address_id}`:
--  `[0]` is the `args` field in `/users/{user_id}`. (`[0]` is always the root args object.)
--  `[1]` is the result from `/users/{user_id}`.
--  `[2]` is the result from `/users/{user_id}/email_addresses`.
-
-Normally, the key search will start with the immediate parent result, `[2]`. If you had a `user_id` key name conflict between results `[1]` and `[2]` and wanted the value from `[1]`, you could specify `{[1].user_id}` to avoid it.
+## URL Composition
+The `url` field in a request can include placeholders `{keyname}` or `{[historyPosition].keyname}`, those placeholders are automatically replaced with values from `args`, `overrides`, or the result of any parent tests. See [URL Composition](docs/composition.md) for more detail.
 
 <a id="_testing"></a>
 ### Testing
-
+Validation rules specified in `test` are applied to every request, if any validation test fails it will also cancel any child tests in that chain. Custom validation plugins can be added to the test suite, see [Settings](docs/settings.md) for custom test plugins and global test cases.
 ##### Validation Syntax
 ```
 {
@@ -231,7 +148,7 @@ Normally, the key search will start with the immediate parent result, `[2]`. If 
 }
 ```
 ##### Validation Defaults
--  If `test` is a number, it is equivalent to `test: { statusCode: (number) }`.
+-  If `test` is a number, it is equivalent to `test: { statusCode: (number) }`. `statusCode: false` will disable the statusCode check.
 -  If `test` is undefined, it will default to `test: { statusCode: 200 }`.
 -  To disable testing altogether, use `test: false` or `test: null`.
 
@@ -247,72 +164,5 @@ If you use a string instead of a full request object, it will default to a simpl
 }
 ```
 
-<a id="_example"></a>
-## Example
-This test grabs a list of objects, deletes every id in that list, then validates that a read against each id will fail.
-```
-{
-  //This step queries the browse endpoint, returning a full array of 'things'
-  url: '/things',
-  test: {
-    statusCode: 200,
-    type: 'array'
-  },
-  followBy: {
-    /*
-    * The results of the parent request is used to generate paths for DELETE requests,
-    *  a request will be generated for each item in parent results array.
-    */
-    method: 'DELETE',
-    url: '/things/{thing_id}',
-    headers: {
-      'auth-token': 'tolkien'
-    },
-
-    //Our DELETE endpoint returns 204 on success, no body to validate.
-    test: 204, //only test statusCode
-
-    /*
-    *  'followBy' can be an array, each followup test will run independently.
-    *  This can be usful for reducing redundancy in your tests.
-    */
-    followBy: [
-
-      /*
-      *  Since a DELETE request was sent for every object returned by the first '/things' request,
-      *  we can validate that a read request for each thing_id will fail.
-      */
-      {
-        /*
-        * Our DELETE endpoint doesn't return a body, but URL composition will
-        * travel up the history chain and use the thing_id from the first test results. 
-        */
-        url: '/things/{thing_id}',
-
-        method: 'GET',
-        test: 404 //expect a 404 since this specific thing_id was deleted.
-      },
-
-      /*
-      *  We can also browse '/things' again and validate that zero objects are returned.
-      *  (This probably won't work if your browse endpoint is paged or limit/offset,
-      *   but you get the idea)
-      */
-      {
-        method: 'GET',
-        url: '/things',
-        test: {
-          statusCode: 200,
-          type: 'array',
-          length: 0 //we should have 0 results now
-        }
-      }
-    ]
-  }
-}
-```
-
 ## Contribution
 Create any pull requests against `master`. If your feature branch is behind upstream master please attempt to rebase/merge, we can help resolve merge conflicts if there are any issues. Feel free to add yourself to the contribution section in `package.json` in your PR.
-
-TODO Testing and code coverage.

@@ -39,8 +39,46 @@ describe('Test Result Validation', function(){
   describe('Default validation fails on non-200 response', function(){
     var suite = '/test/404';
     cheesefist(server, suite, testShouldFail)
-      .done(shouldNotExist, shouldExist);
+    .done(shouldNotExist, shouldExist);
       //cheesefist promise will reject if any tests fail.
+  });
+
+  describe('Global options statusCode validation should be used if default is not provided', function(){
+    var options = {
+      test: 400
+    };
+    cheesefist(server, '/test/response/403', testShouldFail, options)
+      .done(shouldNotExist, shouldExist);
+    //cheesefist promise will reject if any tests fail.
+    cheesefist(server, '/test/response/400', test, options)
+      .done(shouldExist, shouldNotExist);
+  });
+
+  describe('Global options test validation values should be used if default is not provided for that case', function(){
+    var badSuite = {
+      url: '/test/users/1',
+      test: {
+        resultFields: ['user_id']
+      }
+    };
+    var goodSuite = {
+      url: '/test/users',
+      test: {
+        resultFields: ['user_id']
+      }
+    };
+    var options = {
+      test: {
+        type: 'array'
+      }
+    };
+    //should fail
+    cheesefist(server, badSuite, testShouldFail, options)
+      .done(shouldNotExist, shouldExist);
+
+    //should pass
+    cheesefist(server, goodSuite, test, options)
+      .done(shouldExist, shouldNotExist);
   });
 
   describe('Test validation can be skipped altogether', function(){
@@ -117,11 +155,11 @@ describe('Test Result Validation', function(){
     var suite = {
       url: '/test/users',
       test: {
-        validate: function(content, result, request, history){
+        validate: function(content, result, request, context){
           expect(content).to.be.an('array');
           expect(result).to.be.an('object');
           expect(request).to.be.an('object');
-          expect(history).to.be.an('object');
+          expect(context).to.be.an('object').that.has.property('history').that.is.an('array');
           validateTriggered = true;
           return true;
         }
@@ -141,11 +179,11 @@ describe('Test Result Validation', function(){
   describe('Global manual validation function will be called', function(){
     var validateTriggered = false;
     var options = {
-      validate: function(content, result, request, history){
+      validate: function(content, result, request, context){
         expect(content).to.be.an('array');
         expect(result).to.be.an('object');
         expect(request).to.be.an('object');
-        expect(history).to.be.an('object');
+        expect(context).to.be.an('object').that.has.property('history').that.is.an('array');
         validateTriggered = true;
         return true;
       }
@@ -166,11 +204,11 @@ describe('Test Result Validation', function(){
     var suite = {
       url: '/test/users',
       test: {
-        validate: function(content, result, request, history){
+        validate: function(content, result, request, context){
           expect(content).to.be.an('array');
           expect(result).to.be.an('object');
           expect(request).to.be.an('object');
-          expect(history).to.be.an('object');
+          expect(context).to.be.an('object').that.has.property('history').that.is.an('array');
           validateTriggered = true;
           throw new Error('Intentionally throw in validate function!');
         }

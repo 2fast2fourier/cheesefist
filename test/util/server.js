@@ -105,6 +105,21 @@ server.route([
   handler: function(request, reply){
     reply({id: _.parseInt(request.params.number)});
   }
+},
+{
+  method: 'POST',
+  path: '/test/payload/post/{arg}/{value}',
+  handler: function(request, reply){
+    expect(request.payload).to.exist.and.to.have.property(request.params.arg, request.params.value);
+    reply(request.payload);
+  }
+},
+{
+  method: 'GET',
+  path: '/test/response/{code}',
+  handler: function(request, reply){
+    reply({}).code(_.parseInt(request.params.code));
+  }
 }
 ]);
 
