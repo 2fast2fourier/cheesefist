@@ -90,3 +90,4 @@ var faker = require('faker');
   }
 }
 ```
+The generator call contains [`context`](context.md), which has access to request history and other important values.

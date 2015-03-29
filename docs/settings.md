@@ -88,4 +88,4 @@ Any tests that include a rule with the same name as the custom plugin will be ex
 - `content` is the content body from the [`server.inject`](http://hapijs.com/api#serverinjectoptions-callback) result object, `res.result`.
 - `result` is the full response object from [`server.inject`](http://hapijs.com/api#serverinjectoptions-callback).
 - `request` is the request ruleset for this specific stage in the test suite, including `test` object.
-- `context` is the most recent response in the request chain, with `context.content` for accessing the content body and `context.history` for accessing earlier requests.
+- [`context`](context.md) is the most recent response in the request chain, with `context.content` for accessing the content body and `context.history` for accessing earlier requests.
